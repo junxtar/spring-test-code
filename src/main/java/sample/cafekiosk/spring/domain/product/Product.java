@@ -22,7 +22,7 @@ public class Product extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ProductNumber;
+    private String productNumber;
 
     @Enumerated(EnumType.STRING)
     private ProductType type;
@@ -35,8 +35,8 @@ public class Product extends BaseEntity {
     private int price;
 
     @Builder
-    public Product(String productNumber, ProductType type, ProductSellingStatus sellingStatus, String name, int price) {
-        ProductNumber = productNumber;
+    private Product(String productNumber, ProductType type, ProductSellingStatus sellingStatus, String name, int price) {
+        this.productNumber = productNumber;
         this.type = type;
         this.sellingStatus = sellingStatus;
         this.name = name;
