@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import sample.cafekiosk.spring.domain.orderproduct.OrderProduct;
+import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.global.BaseEntity;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,9 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static sample.cafekiosk.spring.domain.order.OrderStatus.INIT;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,8 +38,28 @@ public class Order extends BaseEntity {
 
     private int totalPrice;
 
-    private LocalDateTime resisterDateTime;
+    private LocalDateTime registerDateTime;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderProduct> orderProductList = new ArrayList<>();
+    private List<OrderProduct> orderProducts = new ArrayList<>();
+
+    public Order(List<Product> products, LocalDateTime resisterDateTime) {
+        this.orderStatus = INIT;
+        this.totalPrice = calculateTotalPrice(products);
+        this.registerDateTime = resisterDateTime;
+        this.orderProducts = products.stream()
+                .map(product -> new OrderProduct(this, product))
+                .collect(Collectors.toList());
+    }
+
+    public static Order create(List<Product> products, LocalDateTime resisterDateTime) {
+        return new Order(products, resisterDateTime);
+    }
+
+    private int calculateTotalPrice(List<Product> products) {
+        return products.stream()
+                .mapToInt(Product::getPrice)
+                .sum();
+    }
+
 }
