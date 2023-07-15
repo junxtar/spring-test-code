@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import sample.cafekiosk.spring.api.controller.order.dto.request.OrderCreateRequest;
+import sample.cafekiosk.spring.api.service.order.dto.request.OrderCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.order.dto.response.OrderResponse;
 import sample.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
-import sample.cafekiosk.spring.domain.orderproduct.OrderRepository;
+import sample.cafekiosk.spring.domain.order.OrderRepository;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductType;
@@ -67,11 +67,11 @@ class OrderServiceTest {
 
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "002"))
                 .build();
         // when
-        OrderResponse orderResponse = orderService.createOrder(request.toServiceRequest(), registerDateTime);
+        OrderResponse orderResponse = orderService.createOrder(request, registerDateTime);
 
         // then
         assertThat(orderResponse.getId()).isNotNull();
@@ -98,11 +98,11 @@ class OrderServiceTest {
 
         productRepository.saveAll(List.of(product1, product2, product3));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "001"))
                 .build();
         // when
-        OrderResponse orderResponse = orderService.createOrder(request.toServiceRequest(), now);
+        OrderResponse orderResponse = orderService.createOrder(request, now);
 
         // then
         assertThat(orderResponse.getId()).isNotNull();
@@ -134,11 +134,11 @@ class OrderServiceTest {
 
         stockRepository.saveAll(List.of(stock1, stock2));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "001", "002", "003"))
                 .build();
         // when
-        OrderResponse orderResponse = orderService.createOrder(request.toServiceRequest(), now);
+        OrderResponse orderResponse = orderService.createOrder(request, now);
 
         // then
         assertThat(orderResponse.getId()).isNotNull();
@@ -179,12 +179,12 @@ class OrderServiceTest {
 
         stockRepository.saveAll(List.of(stock1, stock2));
 
-        OrderCreateRequest request = OrderCreateRequest.builder()
+        OrderCreateServiceRequest request = OrderCreateServiceRequest.builder()
                 .productNumbers(List.of("001", "001", "002", "003"))
                 .build();
 
         // when, then
-        assertThatThrownBy(() -> orderService.createOrder(request.toServiceRequest(), registerDateTime))
+        assertThatThrownBy(() -> orderService.createOrder(request, registerDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("재고가 부족한 상품이 있습니다.");
 
