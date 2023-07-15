@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sample.cafekiosk.spring.api.service.order.dto.request.OrderCreateServiceRequest;
 import sample.cafekiosk.spring.api.service.order.dto.response.OrderResponse;
 import sample.cafekiosk.spring.domain.order.Order;
-import sample.cafekiosk.spring.domain.orderproduct.OrderRepository;
+import sample.cafekiosk.spring.domain.order.OrderRepository;
 import sample.cafekiosk.spring.domain.product.Product;
 import sample.cafekiosk.spring.domain.product.ProductRepository;
 import sample.cafekiosk.spring.domain.product.ProductType;
@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class OrderService {
